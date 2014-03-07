@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>GPT and more - Gooogle's new ad framework</title>
+
+		<meta name="description" content="An exploration and explanation of Google's GPT, IMA SDK, and related subjects.">
+		<meta name="author" content="Joseph H. Hohertz">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<!-- First actual slide here -->
+				<section>
+					<h1>The NetflixOSS Stack</h1>
+					<h3>A high-level overview of Netflix's Open Source projects</h3>
+					<p>
+						<small>Presented by <a href="http://joe.hohertz.org">Joe Hohertz</a> / <a href="http://twitter.com/joehohertz">@joehohertz</a></small>
+					</p>
+				</section>
+
+				<section>
+					<section>
+						<h1>Welcome</h1>
+					</section>
+					<section>
+						<h2>Audience</h2>
+						<ol>
+							<li class="fragment">Developers</li>
+							<li class="fragment">Operations</li>
+							<li class="fragment">Project managers</li>
+							<li class="fragment">Other interested parties</li>
+						</ol>
+
+						<aside class="notes">
+							This slide has fragments which are also stepped through in the notes window.
+						</aside>
+	
+					</section>
+					<section>
+						<h1>Let's get started!</h1>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h1>What is NetflixOSS?</h1>
+						<h3>The view from 10,000 feet</h3>
+					</section>
+					<section>
+						<h2>What does NetflixOSS consist of?</h2>
+						<ol>
+							<li class="fragment">Could Native Architecture Components</li>
+							<li class="fragment">Anti-Fragile Patterns</li>
+							<li class="fragment">Other Cloud Tools</li>
+							<li class="fragment">Other Miscellaneous Projects</li>
+						</ol>
+					</section>
+
+					<section>
+						<h2>Cloud Native</h2>
+						<h3 class="fragment">What is this?</h3>
+						<ul>
+							<li class="fragment">Master copies of data are cloud-resident</li>
+							<li class="fragment">Everything is dynamically provisioned</li>
+							<li class="fragment">All services are ephemeral</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Anti-Fragile Patterns</h2>
+						<h3 class="fragment">What is this?</h3>
+						<ul>
+							<li class="fragment">Micro-services</li>
+							<li class="fragment">Highly available systems</li>
+							<li class="fragment">Ephemeral/Immutable components</li>
+							<li class="fragment">Circuit breakers</li>
+							<li class="fragment">Chaos engines</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Micro-services</h2>
+						<ul>
+							<li class="fragment">Split everything into series of micro services</li>
+							<li class="fragment">Clients assume failure will occur, seek alternates</li>
+							<li class="fragment">Calls between services done through circuit breaker pattern</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Chaos Engines</h2>
+						<ul>
+							<li class="fragment">Injected failures</li>
+							<li class="fragment">Expose weaknesses</li>
+							<li class="fragment">Ensure resiliency</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Deep use of Metrics</h2>
+						<ul>
+							<li class="fragment">Most libraries include rich metrics</li>
+							<li class="fragment">Not just for reporting</li>
+							<li class="fragment">Used internally for load management by:</li>
+							<ul>
+								<li class="fragment">Hystrix (breaks overloaded circuits)</li>
+								<li class="fragment">Eureka (service selection)</li>
+							</ul>
+							<li class="fragment">Excellent real-time visualization of metrics</li>
+						</ul>
+					</section>
+
+				</section>
+
+				<section>
+
+					<section>
+						<h1>Deployment</h1>
+					</section>
+
+					<section>
+						<h2>What is deployment like?</h2>
+						<ul>
+							<li class="fragment">Depends on Amazon's Cloud</li>
+							<li class="fragment">One service per node, combination discouraged</li>
+							<li class="fragment">Base AMI provisions a Java web container (Tomcat typical)</li>
+							<li class="fragment">Specific AMIs have WAR deployed onto base</li>
+							<li class="fragment">If WAR is a co-process, the service captured is also deployed to AMI image.</li>
+							<li class="fragment">Each AMI launches into it's own ASG (usually)</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Java?!</h2>
+						<ul>
+							<li class="fragment">Everything runs in a JVM</li>
+							<li class="fragment">Uses JMX for some core functions</li>
+							<li class="fragment">Supports many JSR-233 languages</li>
+							<li class="fragment">Not everything need be in Java-proper</li>
+							<li class="fragment">Many components using Groovy, Scala, etc.</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Image management</h2>
+						<ul>
+							<li class="fragment">Some pre-baked AMIs around...</li>
+							<li class="fragment">Not good for much more than some evaluation</li>
+							<li class="fragment">Bootstrapping your own necessary for real use</li>
+							<li class="fragment">Some level of config baked into AMI, some region-specific (AMI per service per region typical)</li>
+							<li class="fragment">Will build on available Ansible playbooks</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+
+					<section>
+						<h1>Cluster Tools</h1>
+						<h3>The management elements of NetflixOSS</h3>
+					</section>
+
+					<section>
+						<h2>Animator / BUILD</h2>
+						<ul>
+							<li class="fragment">AMI Build tool</li>
+							<li class="fragment">Works with Ansible playbooks</li>
+							<li class="fragment">Handles laying a specific service into a container AMI</li>
+							<li class="fragment">Generates a configured, deployable in ASG, service AMI</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Asgard</h2>
+						<ul>
+							<li class="fragment">Application Deployment Manager</li>
+							<li class="fragment">Manages majority of AWS cloud</li>
+							<li class="fragment">Allows Red/Black rollouts</li>
+							<li class="fragment">Replaces use of EC2 console for most tasks</li>
+							<li class="fragment">Enforces deployment conventionsi / rules</li>
+							<li class="fragment">Does NOT cross production/test boundaries. (Each gets it's own Asgard)</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Ice</h2>
+						<ul>
+							<li class="fragment">Cost analysis / optimization</li>
+							<li class="fragment">Imports from billing API @ Amazon</li>
+							<li class="fragment">Allows querying/reporting on data</li>
+							<li class="fragment">Aware of reserved instances</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Edda</h2>
+						<ul>
+							<li class="fragment">Cluster state analysis/query</li>
+							<li class="fragment">Imports from config APIs @ Amazon</li>
+							<li class="fragment">Allows querying/reporting on data</li>
+							<li class="fragment">Display differences in environment over time</li>
+						</ul>
+					</section>
+
+
+				</section>
+				<section>
+
+					<section>
+						<h1>Base Cluster Services</h1>
+						<h3>The lowest level of the stack</h3>
+					</section>
+
+					<section>
+						<h2>Exhibitor/Curator (Zookeeper)</h2>
+						<ul>
+							<li class="fragment">Zookeeper = Cluster Co-ordination services</li>
+							<li class="fragment">Exhibitor = Zookeeper Co-process</li>
+							<li class="fragment">Curator = Client wrapper for Zookeeper</li>
+							<li class="fragment">Leveraged for configuration management of stack / application on a cluster-wide basis</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Eureka</h2>
+						<ul>
+							<li class="fragment">Application services registry</li>
+							<li class="fragment">How parts of the application find provisioned services</li>
+							<li class="fragment">Central to scaling/HA</li>
+							<li class="fragment">Clients decide how to reach/retry a service given a registry list queried from Eureka (client-side load spreading)</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Turbine / Hystrix Dashboard</h2>
+						<ul>
+							<li class="fragment">Turbine = metrics aggregation</li>
+							<li class="fragment">Hystrix Dashboard = visualization</li>
+							<li class="fragment">Provides real-time insights into all areas of application performance</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Suro</h2>
+						<ul>
+							<li class="fragment">Distributed Data Pipeline</li>
+							<li class="fragment">Collection/Aggregation/Dispatch</li>
+							<li class="fragment">Integration w/ external pipelines (IE: Kafka)</li>
+							<li class="fragment">Supports data logging for Hadoop processing</li>
+						</ul>
+					</section>
+				</section>
+	
+				<section>
+					<section>
+						<h2>NetflixOSS Resources:</h2>
+						<ul>
+							<li class=fragment><a href="http://netflix.github.io/#repo">NetflixOSS Homepage</a></li>
+							<li class=fragment><a href="https://github.com/netflix">NetflixOSS Github Home</a></li>
+							<li class=fragment><a href="http://www.slideshare.net/adrianco/netflix-and-open-source">March 2013 Presentation by Adrian Cockcroft</a></li>
+							<li class=fragment><a href="http://www.slideshare.net/RuslanMeshenberg/svc-202netflixopensource">November 2013 Presentation by Ruslan Meshenberg</a></li>
+							<li class=fragment><a href="https://github.com/Answers4AWS/netflixoss-ansible">Ansible Playbooks for NetflixOSS</a></li>
+						<ul>
+					</section>
+					<section>
+						<h2>NetflixOSS Reference Implementations</h2>
+						<ul>
+							<li class=fragment><a href="https://github.com/cfregly/fluxcapacitor">Flux Capacitor, a reference implementation</a></li>
+							<li class=fragment><a href="https://github.com/aspyker/acmeair-netflix">Conversion of AcmeAir demo application</a></li>
+							<li class=fragment><a href="https://github.com/Netflix/recipes-rss">Example RSS reader application</a></li>
+						<ul>
+					</section>
+				</section>
+
+				<section>
+					<h1>THE END</h1>
+					<h3>BY Joe Hohertz / joe.hohertz.org</h3>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
