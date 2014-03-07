@@ -276,7 +276,53 @@
 						</ul>
 					</section>
 				</section>
-	
+				<section>
+
+					<section>
+						<h1>Frameworks / Libraries</h1>
+						<h3>Application programming environment</h3>
+					</section>
+
+					<section>
+						<h2>Archaius</h2>
+						<ul>
+							<li class="fragment">Provides dynamic/composed config properties</li>
+							<li class="fragment">Can compose config from multiple sources</li>
+							<li class="fragment">Can handle environment/zone specific details</li>
+							<li class="fragment">Stores in zookeeper via curator</li>
+							<li class="fragment">Notifications on property changes available</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Servo</h2>
+						<ul>
+							<li class="fragment">Application metrics</li>
+							<li class="fragment">Publish to JMX is primary channel</li>
+							<li class="fragment">Other publications available (IE: Graphite, Turbine, Cloudwatch)</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Blitz4J</h2>
+						<ul>
+							<li class="fragment">Enhancements to Log4J</li>
+							<li class="fragment">Decouples logging from main thread</li>
+							<li class="fragment">Logging is async</li>
+							<li class="fragment">Can handle high log volumes</li>
+							<li class="fragment">Mitigates loss during log storms via summaries.</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Ribbon</h2>
+						<ul>
+							<li class="fragment">Model for interprocess communication</li>
+							<li class="fragment">Core of how services communicate with other services</li>
+							<li class="fragment">Where client-side load balancers are implemented</li>
+							<li class="fragment">Provides REST-based model for service exposure</li>
+							<li class="fragment">Various serialization schemes supported (JSON primarily)</li>
+						</ul>
+					</section>
+				</section>
+		
 				<section>
 					<section>
 						<h2>NetflixOSS Resources:</h2>
